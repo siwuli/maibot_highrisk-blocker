@@ -12,7 +12,7 @@
 3. 若清理后仍有正常文本 → 发送清理后的内容，保留正常回复。
 """
 
-from maibot_sdk import Field, MaiBotPlugin, PluginConfigBase
+from maibot_sdk import CONFIG_RELOAD_SCOPE_SELF, Field, MaiBotPlugin, PluginConfigBase
 from maibot_sdk.components import HookHandler, HookMode, HookOrder
 
 DEFAULT_PHRASES = [
@@ -21,12 +21,21 @@ DEFAULT_PHRASES = [
 ]
 
 
+class PluginSectionConfig(PluginConfigBase):
+    """插件基础配置节。"""
+
+    __ui_label__ = "插件"
+
+    enabled: bool = Field(default=True, description="是否启用插件")
+    config_version: str = Field(default="1.0.0", description="配置版本")
+
+
 class BlockerSectionConfig(PluginConfigBase):
     """高危错误消息拦截配置节。"""
 
     __ui_label__ = "拦截配置"
     __ui_icon__ = "shield"
-    __ui_order__ = 0
+    __ui_order__ = 1
 
     enabled: bool = Field(default=True, description="是否启用高危错误消息拦截")
     phrases: list[str] = Field(
@@ -38,6 +47,7 @@ class BlockerSectionConfig(PluginConfigBase):
 class BlockerConfig(PluginConfigBase):
     """拦截插件配置。"""
 
+    plugin: PluginSectionConfig = Field(default_factory=PluginSectionConfig)
     blocker: BlockerSectionConfig = Field(default_factory=BlockerSectionConfig)
 
 
@@ -57,6 +67,16 @@ class HighRiskBlockerPlugin(MaiBotPlugin):
     async def on_unload(self) -> None:
         """插件卸载时的清理。"""
         self.ctx.logger.info("[highrisk-blocker] 已卸载")
+
+    async def on_config_update(self, scope: str, config_data: dict[str, object], version: str) -> None:
+        """插件配置热更新回调。"""
+        if scope == CONFIG_RELOAD_SCOPE_SELF:
+            self.ctx.logger.info(
+                "[highrisk-blocker] 配置已更新: version=%s，启用状态=%s，拦截片段=%d 条",
+                version,
+                self.config.blocker.enabled,
+                len([p for p in self.config.blocker.phrases if str(p or "").strip()]),
+            )
 
     @HookHandler(
         "send_service.before_send",
