@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "name": "高危错误消息拦截",
   "description": "在出站消息发送前移除/拦截包含高危错误文案（如 LLM 中转代理返回的内容安全拒绝原文）的消息，避免错误原文被发到群里。",
   "author": {

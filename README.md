@@ -1,5 +1,7 @@
 # Highrisk Blocker for MaiBot
 
+> 当前版本：**v1.0.1** · [GitHub](https://github.com/siwuli/maibot_highrisk-blocker)
+
 MaiBot 高危错误消息拦截插件：在**出站消息发送前**移除或拦截包含高危错误文案的消息，避免 LLM 返回的错误原文被直接发到群里。
 
 ## 背景
@@ -72,6 +74,13 @@ phrases = [
 - 建议定期查看日志中 `[highrisk-blocker]` 记录，若出现新的错误文案原文，补充到
   `blocker.phrases` 即可；
 - 根本解决方案是检查 / 更换返回错误文案的 LLM 中转代理来源，本插件用于兜底防护。
+
+## 版本记录
+
+| 版本 | 日期 | 更新内容 |
+|------|------|----------|
+| 1.0.1 | 2026-08-11 | 修复插件无法加载的问题：补充 `on_load` / `on_config_update` 生命周期方法；配置模型调整为 `plugin` + `blocker` 配置节（新增 `plugin.config_version`，适配新版配置校验） |
+| 1.0.0 | 2026-08-11 | 首个版本：在出站消息发送前移除/拦截高危错误文案（`send_service.before_send` Hook） |
 
 ## 许可
 
