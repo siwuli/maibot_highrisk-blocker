@@ -1,0 +1,14 @@
+[plugin]
+enabled = true
+config_version = "1.0.0"
+
+[blocker]
+# 是否启用高危错误消息拦截：设为 false 时插件仅加载、不做任何拦截处理。
+enabled = true
+# 消息文本命中以下任意片段（不区分大小写）时，从消息中移除该片段；
+# 若移除后无剩余文本（即整条消息就是错误原文），则中止本次发送。
+# 默认值针对 LLM 中转代理把上游内容安全拒绝错误伪装成正常响应返回的场景。
+phrases = [
+    "The request was rejected because it was considered high risk",
+    "considered high risk",
+]

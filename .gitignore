@@ -1,0 +1,10 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# 用户本地配置：首次启动由 config.example.toml 自动生成，且可能包含个人拦截词等配置，不入库
+config.toml
+config_back/
